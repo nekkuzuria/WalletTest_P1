@@ -1,77 +1,81 @@
-import org.example.Wallet;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+    import org.example.Wallet;
+    import org.junit.jupiter.api.*;
 
-public class WalletTest {
-    @Test
-    void testAddCard(){
-        Wallet mywallet = new Wallet("manda");
-        mywallet.addCard("KTM");
-        mywallet.addCard("KTP");
-        Assertions.assertEquals(2, mywallet.getCards().size());
+    import static org.junit.jupiter.api.Assertions.assertEquals;
+
+    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+    public class WalletTest {
+        private static Wallet mywallet;
+
+        @BeforeEach
+        void initMethod() {
+            mywallet = new Wallet("manda");
+            mywallet.addCard("KTM");
+            mywallet.addCard("KTP");
+            mywallet.addMoney(10000);
+            mywallet.addMoney(10000);
+            mywallet.addCoin(500);
+        }
+
+        @AfterEach
+        void tearDown() {
+            mywallet.getCards().clear();
+            mywallet.getMoneys().clear();
+            mywallet.getCoins().clear();
+        }
+
+
+        @Test
+        void testAddCard(){
+            mywallet.addCard("Mandiri");
+            mywallet.addCard("BNI");
+            assertEquals(4, mywallet.getCards().size());
+        }
+
+        @Test
+        void testTakeCard(){
+            mywallet.addCard("BRI");
+            mywallet.takeCard("KTM");
+            assertEquals(2, mywallet.getCards().size());
+        }
+
+        @Test
+        void testAddMoney(){
+            mywallet.addMoney(100000);
+            assertEquals(1, mywallet.getMoneys().get(100000));
+        }
+
+        @Test
+        void testAddCoin(){
+            mywallet.addCoin(100);
+            assertEquals(1, mywallet.getCoins().get(100));
+        }
+
+        @Test
+        void testTakeCoins(){
+            mywallet.takeCoins(500);
+            assertEquals(0, mywallet.getCoins().get(500));
+        }
+
+        @Test
+        void testTakeMoneys(){
+            mywallet.takeMoneys(10000);
+            assertEquals(1, mywallet.getMoneys().get(10000));
+        }
+
+        @Test
+        void testGetMoneyAvailable(){
+            assertEquals(20500, mywallet.getMoneyAvailable());
+        }
+
+        @Test
+        void testCalculateMoneys(){
+            assertEquals(20000, mywallet.calculateMoneys());
+        }
+
+        @Test
+        void testCalculateCoins(){
+            assertEquals(500, mywallet.calculateCoins());
+        }
     }
-    @Test
-    void testTakeCard(){
-        Wallet mywallet = new Wallet("manda");
-        mywallet.addCard("KTM");
-        mywallet.addCard("KTP");
-        mywallet.addCard("BRI");
-        mywallet.takeCard("KTM");
-        Assertions.assertEquals(2, mywallet.getCards().size());
-    }
-    @Test
-    void testAddMoney(){
-        Wallet mywallet = new Wallet("manda");
-        mywallet.addMoney(10000);
-        mywallet.addMoney(10000);
-        Assertions.assertEquals(2, mywallet.getMoneys().get(10000));
-    }
-    @Test
-    void testAddCoin(){
-        Wallet mywallet = new Wallet("manda");
-        mywallet.addCoin(500);
-        Assertions.assertEquals(1, mywallet.getCoins().get(500));
-    }
-    @Test
-    void testTakeCoins(){
-        Wallet mywallet = new Wallet("manda");
-        mywallet.addCoin(500);
-        mywallet.addCoin(500);
-        mywallet.takeCoins(500);
-        Assertions.assertEquals(1, mywallet.getCoins().get(500));
-    }
-    @Test
-    void testTakeMoneys(){
-        Wallet mywallet = new Wallet("manda");
-        mywallet.addMoney(5000);
-        mywallet.addMoney(5000);
-        mywallet.takeMoneys(5000);
-        Assertions.assertEquals(1, mywallet.getMoneys().get(5000));
-    }
-    @Test
-    void testGetMoneyAvailable(){
-        Wallet mywallet = new Wallet("manda");
-        mywallet.addMoney(10000);
-        mywallet.addCoin(500);
-        Assertions.assertEquals(10500, mywallet.getMoneyAvailable());
-    }
-    @Test
-    void testCalculateMoneys(){
-        Wallet mywallet = new Wallet("manda");
-        mywallet.addMoney(10000);
-        mywallet.addMoney(20000);
-        mywallet.addMoney(1000);
-        mywallet.addMoney(50000);
-        mywallet.addMoney(100000);
-        Assertions.assertEquals(181000, mywallet.calculateMoneys());
-    }
-    @Test
-    void testCalculateCoins(){
-        Wallet mywallet = new Wallet("manda");
-        mywallet.addCoin(500);
-        mywallet.addCoin(100);
-        mywallet.addCoin(1000);
-        mywallet.addCoin(1000);
-        Assertions.assertEquals(2600, mywallet.calculateCoins());
-    }
-}
+
